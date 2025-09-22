@@ -8,7 +8,7 @@ def index(request):
     if request.method == "POST":
         country = request.POST.get('country')
         form = False
-        data = requests.get(f"https://restcountries.com/v3.1/name/{country}").json()
+        data = requests.get(f"paste your api here {country}").json()
 
         for i in data:
             d = {}
@@ -83,3 +83,4 @@ def index(request):
 
     context = {'form': form, 'l': l}
     return render(request, 'index.html', context)
+
