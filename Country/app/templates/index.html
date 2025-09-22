@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Country Info</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: Arial, sans-serif;
+        background: url("https://4kwallpapers.com/images/wallpapers/world-map-art-5k-golden-2880x1800-16647.jpg ") no-repeat center center fixed;
+        background-size: cover;
+        color: white;
+    }
+
+    form { text-align: center; margin: 50px 0; }
+    input[type=text] { padding: 5px 10px; font-size: 16px; }
+    button { padding: 5px 10px; font-size: 16px; cursor: pointer; }
+
+    .country-container {
+        width: 100%;
+        min-height: 600px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .overlay {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 90%;
+        max-width: 800px;
+    }
+
+    /* Glass effect applied to each element */
+    .overlay h1, 
+    .overlay h2 {
+        padding: 10px 15px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+        border: 1px solid rgba(255,255,255,0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        color: #fff;
+    }
+
+    /* Flag iframe glass style */
+    .flag-frame {
+        width: 300px;
+        height: 200px;
+        border: none;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        margin-bottom: 10px;
+    }
+
+    .overlay img {
+        margin-top: 5px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.4);
+        background: rgba(255,255,255,0.1);
+        padding: 5px;
+    }
+
+    .overlay a { color: #ffeb3b; text-decoration: underline; }
+</style>
+</head>
+<body>
+{% if form %}
+    <form method="post">
+        {% csrf_token %}
+        <label>Country Name:</label>
+        <input type="text" name="country" placeholder="Enter country name">
+        <button type="submit">Search</button>
+    </form>
+{% else %}
+    {% for i in l %}
+    <div class="country-container">
+        <div class="overlay">
+            <h1>Common Name: {{ i.name_common }}</h1>
+            <h1>Official Name: {{ i.name_official }}</h1>
+            <h2>Independent: {{ i.independent }}</h2>
+            <h2>Currency: {{ i.currency_name }} ({{ i.currency_symbol }})</h2>
+            <h2>Country Codes: {{ i.cca2 }}, {{ i.cca3 }}, {{ i.ccn3 }}</h2>
+            <h2>INR: {{ i.inr }}</h2>
+            <h2>Coat of Arms: 
+                {% if i.coatOfArms %}
+                    <img src="{{ i.coatOfArms }}" alt="Coat of Arms" width="100" height="150">
+                {% else %}
+                    Not available
+                {% endif %}
+            </h2>
+            <h2>Calling Code: {{ i.calling_code }}</h2>
+            <h2>Capital: {{ i.capital }}</h2>
+            <h2>Region: {{ i.region }}, Subregion: {{ i.subregion }}</h2>
+            <h2>Languages: {{ i.languages|join:", " }}</h2>
+            <h2>Latitude: {{ i.latitude }}, Longitude: {{ i.longitude }}</h2>
+            <h2>Borders Shared: {{ i.borders|join:", " }}</h2>
+            <h2>Area: {{ i.area }} km², Population: {{ i.population }}</h2>
+            <h2>Timezones: {{ i.timezones|join:", " }}</h2>
+            
+            <!-- Flag in iframe -->
+            <h2>Flag:</h2>
+            <iframe src="{{ i.flags }}" class="flag-frame"></iframe>
+            <h2>Maps: 
+                <a href="{{ i.googleMaps }}" target="_blank">Google Maps</a>
+            </h2>
+            <h2>OpenStreetMap:
+            <iframe 
+                src="https://www.openstreetmap.org/export/embed.html?bbox={{ i.longitude|floatformat:2 }},{{ i.latitude|floatformat:2 }},{{ i.longitude|floatformat:2 }},{{ i.latitude|floatformat:2 }}&layer=mapnik" 
+                class="map-frame" style="height: 500px; width: 100%;"></iframe>
+            </h2>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+</body>
+</html>
