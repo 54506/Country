@@ -84,3 +84,4 @@ def index(request):
     context = {'form': form, 'l': l}
     return render(request, 'index.html', context)
 
+
